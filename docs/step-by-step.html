@@ -1,0 +1,30 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>GC Animation</title>
+<meta name="author" content="Ken Fox, ken@vulpes.com">
+<style type="text/css">
+  body { margin: 10px; font-family: arial,verdana,helvetica; background: #fff; }
+  h1 { font-size: 140%; font-weight:normal; color: #036; }
+  canvas { border: 1px solid #000; float: left; margin-right: 20px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+<h1>GC <span id="run_status"></span> <button id="run_button" type="button" onclick="toggle_animation()">Start</button> <span id="bp_msg"></h1>
+
+<div style="border:0px; padding:0px; width:1205px; height:600px; overflow:auto;">
+
+<div style="position: relative;">
+<canvas id="legend" width="1201" height="4801" style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+<canvas id="memory" width="1201" height="4801" style="position: absolute; left: 0; top: 0; z-index: 1;"></canvas>
+<canvas id="animation" width="1201" height="4801" style="position: absolute; left: 0; top: 0; z-index: 2;"></canvas>
+<canvas id="drawing" width="1201" height="4801" style="position: absolute; left: 0; top: 0; z-index: 3;"></canvas>
+</div>
+
+</div>
+
+<script type="text/javascript" src="frames.js"></script>
+<script type="text/javascript" src="engine.js"></script>
+
+</body>
+</html>
