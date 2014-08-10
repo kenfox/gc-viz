@@ -30,19 +30,19 @@ available.
 What Is Garbage Collection?
 ===========================
 
-# automatic
-# resource - usually memory, but practical for any storage
-# management
+- automatic
+- resource - usually memory, but practical for any storage
+- management
 
-# very old technology, general purpose ideas
-# misunderstanding causes problems, e.g. "map of weak refs" != cache
+- very old technology, general purpose ideas
+- misunderstanding causes problems, e.g. "map of weak refs" != cache
 
-# goals of GC: higher level code, uncouple systems, improve performance
+- goals of GC: higher level code, uncouple systems, improve performance
 
-# different kinds of memory: unintuitive and getting worse:
-## L1 cache 1ns
-## L2 cache 10ns
-## main memory 100ns
+- different kinds of memory: unintuitive and getting worse:
+  - L1 cache 1ns
+  - L2 cache 10ns
+  - main memory 100ns
 
 Most programmers are well into the phase of computing where we
 depend on the compiler and run-time for memory management just as
@@ -52,91 +52,86 @@ still a problem for GC.
 
 Terminology
 
-# root set: active variables (and machine stuff: stack, cpu registers)
-# live set: reachable from root set
-# garbage: everything else
+- root set: active variables (and machine stuff: stack, cpu registers)
+- live set: reachable from root set
+- garbage: everything else
 
 Algorithms!
 ===========
 
-Free At Exit, aka There's Plenty of RAM
-=======================================
+## Free At Exit, aka There's Plenty of RAM
 
-NO_GC
+`NO_GC` option in the Makefile.
 
-# simplest possible system
-# best concurrency (only allocator)
-# reasonable for small programs
-# definition of "small" increases as technology improves
-# no destructors
+- simplest possible system
+- best concurrency (only allocator)
+- reasonable for small programs
+- definition of "small" increases as technology improves
+- no destructors
 
-Reference Counting
-==================
+## Reference Counting
 
-REF_COUNT_GC
+`REF_COUNT_GC` option in the Makefile.
 
-# 1960
-# synchronous - destructors useful
-# accidentally ammortized (but long pauses possible)
-# simple concurrency
-# possible to retrofit
+- 1960
+- synchronous - destructors useful
+- accidentally ammortized (but long pauses possible)
+- simple concurrency
+- possible to retrofit
 
-# expensive in cpu
-# needs extra word per object to hold counts
-# no cycles
-# complicated api and/or leaky abstraction
-# expensive allocator (fragmentation, locality)
-# which allocator doesn't matter (time efficient slab allocator)
-# threading problems (mutating ref counts - no read-only data!,
-                      destructor runs on random thread)
+- expensive in cpu
+- needs extra word per object to hold counts
+- no cycles
+- complicated api and/or leaky abstraction
+- expensive allocator (fragmentation, locality)
+- which allocator doesn't matter (time efficient slab allocator)
+- threading problems (mutating ref counts - no read-only data!, destructor runs on random thread)
 
-# iOS, file systems
+- iOS, file systems
 
-# extensions:
-## deferred ref count
-## deferred free
-## ref count tables
-## N bit (including 1 bit) ref counts
+- extensions:
+  - deferred ref count
+  - deferred free
+  - ref count tables
+  - N bit (including 1 bit) ref counts
 
-Mark Sweep
-==========
+## Mark Sweep
 
-MARK_SWEEP_GC
+`MARK_SWEEP_GC` option in the Makefile.
 
-# 1960
-# traversal required
-# simple
-# destructors easy, but delayed
-# conservative option (traversal can be approximated)
-# possible to retrofit
+- 1960
+- traversal required
+- simple
+- destructors easy, but delayed
+- conservative option (traversal can be approximated)
+- possible to retrofit
 
-# asynch
-# expensive allocator (fragmentation, locality)
-# complicated concurrency (multi-color)
+- asynch
+- expensive allocator (fragmentation, locality)
+- complicated concurrency (multi-color)
 
-# Lua, Flash, Ruby
+- Lua, Flash, Ruby
 
-# extensions:
-## deferred free
-## mark tables (examine multiple objects at once)
+- extensions:
+- deferred free
+- mark tables (examine multiple objects at once)
 
-Mark Compact
-============
+## Mark Compact
 
-MARK_COMPACT_GC
+`MARK_COMPACT_GC` option in the Makefile.
 
-# 1964
-# precise traversal required
-# simple
-# minimum total memory usage
-# super cheap allocator ("bump" allocator with only a few instructions)
-# moving objects difficult to retrofit
+- 1964
+- precise traversal required
+- simple
+- minimum total memory usage
+- super cheap allocator ("bump" allocator with only a few instructions)
+- moving objects difficult to retrofit
 
-# needs 3 passes, but can trade memory for performance
-# very complicated concurrency (multi-color, barriers)
+- needs 3 passes, but can trade memory for performance
+- very complicated concurrency (multi-color, barriers)
 
-# general algorithm that can make other problems easier
-# example: fair random row selection
+- general algorithm that can make other problems easier
+- example: fair random row selection
 
 ```
            first pass through the database compacts rows so that
@@ -145,40 +140,38 @@ MARK_COMPACT_GC
            select * where position > random() order by position limit 1
 ```
 
-Copy
-====
+## Copy
 
-COPY_GC
+`COPY_GC` option in the Makefile.
 
-# 1962
-# precise traversal required
-# simplest
-# super cheap allocator
-# work proportional to live data (garbage doesn't matter!)
+- 1962
+- precise traversal required
+- simplest
+- super cheap allocator
+- work proportional to live data (garbage doesn't matter!)
 
-# semi-spaces
-# no destructors - finalize should not be used
-# very complicated concurrency (multi-color, barriers)
-# moving objects difficult to retrofit
+- semi-spaces
+- no destructors - finalize should not be used
+- very complicated concurrency (multi-color, barriers)
+- moving objects difficult to retrofit
 
-# common degenerate case: per-transaction pool, delete when done
+- common degenerate case: per-transaction pool, delete when done
 
-# most useful gc algorithm whenever you have little live data
-# non-memory example: web session storage deletion on Amazon SimpleDB
+- most useful gc algorithm whenever you have little live data
+- non-memory example: web session storage deletion on Amazon SimpleDB
 
            create new and old domains
            your server reads from new and faults old into it
            nightly: delete the old domain, create new one, and flip
 
-Generational, Ephemeral and more
-================================
+## Generational, Ephemeral and more
 
-# 1984
-# hypothesis: most objects die young
-# chain together copy collectors
-# oldest generation can use a different gc method
+- 1984
+- hypothesis: most objects die young
+- chain together copy collectors
+- oldest generation can use a different gc method
 
-# inter-generational references suck
-# non-intuitive performance (garbage is cheap, reuse is expensive)
+- inter-generational references suck
+- non-intuitive performance (garbage is cheap, reuse is expensive)
 
-# foundation for all advanced modern gc
+- foundation for all advanced modern gc
