@@ -19,3 +19,8 @@
 *.exe
 *.out
 *.app
+
+# Image Files
+*.xpm
+*.gif
+frames.js

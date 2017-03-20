@@ -9,6 +9,7 @@ $(ALGO).gif: dkp.exe
 	./dkp.exe data/dkp.log-big > frames.js
 	rm -f $(ALGO).gif
 	convert -loop 1 -delay 3 *.xpm $(ALGO).gif
+	mkdir raw -p
 	mv -f *.xpm raw
 
 dkp.exe: Makefile dkp.cc
