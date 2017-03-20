@@ -202,12 +202,12 @@ class ForwardingAddress: public Obj {
 };
 
 struct MemInfo {
-    static uint time;
+    static unsigned int time;
 
     bool is_allocated;
     bool is_overhead;
-    uint last_write;
-    uint last_read;
+    unsigned int last_write;
+    unsigned int last_read;
 
     MemInfo() {
         is_allocated = false;
@@ -568,7 +568,7 @@ class Mem {
     }
 };
 
-uint MemInfo::time = 0;
+unsigned int MemInfo::time = 0;
 UWd Mem::heap[HeapSize];
 MemInfo Mem::info[HeapSize];
 Loc Mem::top = 0;
